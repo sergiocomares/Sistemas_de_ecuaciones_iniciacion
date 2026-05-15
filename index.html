@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Descubriendo las ecuaciones lineales</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+  <style>
+    :root {
+      --bg: #f3fbfa;
+      --surface: #ffffff;
+      --text: #18343a;
+      --muted: #5a7580;
+      --primary: #0f766e;
+      --primary-soft: #d9f5f2;
+      --accent: #f97316;
+      --ok: #15803d;
+      --ok-soft: #e8f7ee;
+      --bad: #b91c1c;
+      --bad-soft: #fdecec;
+      --border: rgba(24, 52, 58, 0.14);
+      --shadow: 0 14px 30px rgba(15, 118, 110, 0.14);
+      --radius: 20px;
+      --radius-lg: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.2), transparent 32%),
+        radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.16), transparent 25%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1250px, calc(100% - 20px));
+      margin: 12px auto 28px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero,
+    .phase,
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    h1 {
+      margin: 6px 0;
+      font-size: clamp(2.2rem, 4vw, 4.2rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+      color: var(--muted);
+      max-width: 72ch;
+      line-height: 1.5;
+    }
+
+    .toolbar,
+    .stats,
+    .grid,
+    .row,
+    .phase-tabs,
+    .phase-actions {
+      display: grid;
+      gap: 12px;
+    }
+
+    .toolbar {
+      grid-template-columns: 1fr auto auto auto;
+      align-items: center;
+    }
+
+    select,
+    input[type="number"] {
+      min-height: 58px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 0 12px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .btn {
+      min-height: 60px;
+      padding: 0 18px;
+      border-radius: 16px;
+      border: 0;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: linear-gradient(130deg, var(--primary), #0f9488);
+      box-shadow: 0 10px 22px rgba(15, 118, 110, 0.22);
+    }
+
+    .btn.secondary {
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .btn.ghost {
+      color: var(--primary);
+      background: var(--primary-soft);
+      border: 1px solid rgba(15, 118, 110, 0.2);
+    }
+
+    .phase-tabs {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .phase-tab {
+      min-height: 66px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .phase-tab.active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .phase-tab:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fff;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: clamp(1.35rem, 2.4vw, 2rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .card {
+      padding: 18px;
+      line-height: 1.6;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      color: var(--text);
+      font-size: 1.45rem;
+    }
+
+    .phase {
+      padding: 24px;
+      display: none;
+      animation: fadeIn 280ms ease both;
+    }
+
+    .phase.visible {
+      display: block;
+    }
+
+    .phase-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .phase-kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: var(--primary);
+      background: var(--primary-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .phase-title {
+      margin: 6px 0;
+      font-size: clamp(1.6rem, 2.3vw, 2rem);
+      letter-spacing: -0.02em;
+    }
+
+    .phase-subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.04rem;
+    }
+
+    .phase-number {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(130deg, var(--primary), #0f9488);
+      font-weight: 900;
+    }
+
+    .context {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(20, 184, 166, 0.24);
+      background: linear-gradient(135deg, #f0fffd, #fffaf4);
+      font-size: 1.2rem;
+      line-height: 1.5;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .math-badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .choice {
+      min-height: 106px;
+      border-radius: 18px;
+      border: 2px solid var(--border);
+      background: #fff;
+      text-align: left;
+      padding: 14px;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 180ms ease, transform 180ms ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-2px);
+      border-color: rgba(15, 118, 110, 0.45);
+    }
+
+    .choice.selected {
+      border-color: rgba(15, 118, 110, 0.9);
+      background: var(--primary-soft);
+    }
+
+    .choice.ok {
+      border-color: rgba(21, 128, 61, 0.8);
+      background: var(--ok-soft);
+    }
+
+    .choice.bad {
+      border-color: rgba(185, 28, 28, 0.8);
+      background: var(--bad-soft);
+    }
+
+    .row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: end;
+    }
+
+    .result {
+      min-height: 58px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      line-height: 1.5;
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: #fff;
+      margin-top: 10px;
+    }
+
+    .result.ok {
+      background: var(--ok-soft);
+      color: var(--ok);
+      border-color: rgba(21, 128, 61, 0.3);
+    }
+
+    .result.bad {
+      background: var(--bad-soft);
+      color: var(--bad);
+      border-color: rgba(185, 28, 28, 0.3);
+    }
+
+    .result.info {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: rgba(15, 118, 110, 0.22);
+    }
+
+    .pieces,
+    .slots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .piece,
+    .slot {
+      min-width: 92px;
+      min-height: 58px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
+
+    .piece {
+      border: 2px solid rgba(20, 184, 166, 0.22);
+      background: #f4fffe;
+      cursor: pointer;
+      transition: transform 160ms ease;
+    }
+
+    .piece:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .piece:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .slot {
+      border: 2px dashed rgba(20, 184, 166, 0.25);
+      background: #fff;
+    }
+
+    .slot.placeholder {
+      color: rgba(24, 52, 58, 0.35);
+    }
+
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: auto;
+      margin-top: 10px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-top: 1px solid rgba(24, 52, 58, 0.08);
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    th {
+      color: var(--primary);
+      background: #effdfb;
+      border-top: 0;
+    }
+
+    canvas {
+      width: 100%;
+      height: 500px;
+      display: block;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 980px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-tabs,
+      .stats,
+      .grid,
+      .row,
+      .choice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div class="eyebrow">2º ESO · Primer dia · Trabajo grupal</div>
+      <h1>Descubriendo las ecuaciones lineales</h1>
+      <p class="subtitle">Actividad por fases para pizarra digital: interpretar, proponer oralmente, comprobar en directo y detectar patrones en la grafica.</p>
+
+      <div class="toolbar">
+        <select id="exerciseSelect" aria-label="Selector de ejercicio"></select>
+        <button class="btn secondary" id="randomExerciseButton" type="button">Ejercicio aleatorio</button>
+        <button class="btn primary" id="nextPhaseButton" type="button">Siguiente fase</button>
+        <button class="btn secondary" id="fullscreenButton" type="button">Pantalla completa</button>
+      </div>
+
+      <div class="toolbar" style="grid-template-columns: auto 1fr auto;">
+        <label style="display:flex; align-items:center; gap:8px; font-weight:800; color:var(--muted);">
+          <input id="soundToggle" type="checkbox" /> Sonido opcional
+        </label>
+        <div></div>
+        <button class="btn ghost" id="resetButton" type="button">Reiniciar actividad</button>
+      </div>
+
+      <div class="phase-tabs" id="phaseTabs">
+        <button class="phase-tab active" data-phase="1" type="button">Fase 1</button>
+        <button class="phase-tab" data-phase="2" type="button">Fase 2</button>
+        <button class="phase-tab" data-phase="3" type="button">Fase 3</button>
+        <button class="phase-tab" data-phase="4" type="button">Fase 4</button>
+        <button class="phase-tab" data-phase="5" type="button">Fase 5</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-label">Aciertos</div><div class="stat-value" id="scoreCounter">0</div></div>
+        <div class="stat"><div class="stat-label">Soluciones validas</div><div class="stat-value" id="solutionsCounter">0</div></div>
+        <div class="stat"><div class="stat-label">Fase actual</div><div class="stat-value" id="phaseCounter">1 / 5</div></div>
+      </div>
+
+      <div class="result info" id="globalInfo">Formato colectivo: cada error se debate y cada acierto se justifica.</div>
+      <div style="height:14px; border-radius:999px; background:#d9e6e5; overflow:hidden;">
+        <div id="progressBar" style="height:100%; width:0%; background:linear-gradient(90deg,var(--primary),#14b8a6,#f59e0b); transition:width 320ms ease;"></div>
+      </div>
+      <div style="text-align:right; font-weight:900; color:var(--muted);" id="progressLabel">0%</div>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Ritmo de clase</h2>
+        La idea es pausar y comentar. Primero variables, despues ecuacion, despues soluciones y finalmente grafica.
+      </article>
+      <article class="card">
+        <h2>Objetivo visual</h2>
+        \[\text{Ver que las soluciones de una ecuacion lineal forman una recta}\]
+      </article>
+    </section>
+
+    <main>
+      <section class="phase visible" id="phase1">
+        <div class="phase-head">
+          <div>
+            <span class="phase-kicker">Fase 1</span>
+            <h2 class="phase-title">Identificar variables</h2>
+            <p class="phase-subtitle">Elegimos el significado de \(x\) y \(y\).</p>
+          </div>
+          <div class="phase-number">1</div>
+        </div>
+        <div class="context" id="exerciseStatement"></div>
+
+        <div class="math-badge">\(x\) representa</div>
+        <div class="choice-grid">
+          <button class="choice" data-variable="x" data-value="var1" type="button"><span id="xOptionVar1"></span></button>
+          <button class="choice" data-variable="x" data-value="var2" type="button"><span id="xOptionVar2"></span></button>
+        </div>
+
+        <div class="math-badge">\(y\) representa</div>
+        <div class="choice-grid">
+          <button class="choice" data-variable="y" data-value="var1" type="button"><span id="yOptionVar1"></span></button>
+          <button class="choice" data-variable="y" data-value="var2" type="button"><span id="yOptionVar2"></span></button>
+        </div>
+
+        <div class="phase-actions" style="grid-template-columns:1fr 1fr;">
+          <button class="btn primary" id="checkVariablesButton" type="button">Comprobar variables</button>
+          <button class="btn secondary" id="clearVariablesButton" type="button">Limpiar seleccion</button>
+        </div>
+
+        <div class="result" id="variablesFeedback">Selecciona una opcion para \(x\) y otra para \(y\).</div>
+        <div class="math-badge" id="variablesExpectedBadge"></div>
+      </section>
+
+      <section class="phase" id="phase2">
+        <div class="phase-head">
+          <div>
+            <span class="phase-kicker">Fase 2</span>
+            <h2 class="phase-title">Construir la ecuacion</h2>
+            <p class="phase-subtitle">Unimos piezas para formar la expresion.</p>
+          </div>
+          <div class="phase-number">2</div>
+        </div>
+
+          <div class="context" id="phase2Statement"></div>
+        <div class="pieces" id="piecesContainer"></div>
+        <div class="slots" id="equationSlots"></div>
+        <div class="result info" id="equationPreview">\[\;\]</div>
+
+        <div class="phase-actions" style="grid-template-columns:1fr 1fr 1fr;">
+          <button class="btn primary" id="checkEquationButton" type="button">Comprobar ecuacion</button>
+          <button class="btn secondary" id="undoPieceButton" type="button">Deshacer ultimo</button>
+          <button class="btn ghost" id="resetEquationButton" type="button">Reiniciar piezas</button>
+        </div>
+
+        <div class="result" id="equationFeedback">Construye la expresion con las piezas.</div>
+      </section>
+
+      <section class="phase" id="phase3">
+        <div class="phase-head">
+          <div>
+            <span class="phase-kicker">Fase 3</span>
+            <h2 class="phase-title">¿Es solucion?</h2>
+            <p class="phase-subtitle">Sustituimos \(x\) e \(y\) y comprobamos.</p>
+          </div>
+          <div class="phase-number">3</div>
+        </div>
+
+          <div class="context" id="phase3Statement"></div>
+        <div class="context" id="phase3EquationBox">\[\text{Primero descubre la ecuacion en la fase 2}\]</div>
+
+        <div class="row">
+          <div>
+            <label for="xValue"><strong>Valor de \(x\)</strong></label>
+            <input id="xValue" type="number" step="any" />
+          </div>
+          <div>
+            <label for="yValue"><strong>Valor de \(y\)</strong></label>
+            <input id="yValue" type="number" step="any" />
+          </div>
+          <div>
+            <button class="btn primary" id="checkSolutionButton" type="button">Comprobar</button>
+          </div>
+        </div>
+
+        <div class="result info" id="solutionSteps">Aqui aparecera el calculo paso a paso.</div>
+        <div class="result" id="solutionFeedback">Introduce dos valores y comprueba.</div>
+      </section>
+
+      <section class="phase" id="phase4">
+        <div class="phase-head">
+          <div>
+            <span class="phase-kicker">Fase 4</span>
+            <h2 class="phase-title">Tabla de valores</h2>
+            <p class="phase-subtitle">Anadimos varias soluciones validas.</p>
+          </div>
+          <div class="phase-number">4</div>
+        </div>
+
+        <div class="math-badge" id="phase4EquationBadge"></div>
+
+  <div class="context" id="phase4Statement"></div>
+        <div class="row">
+          <div>
+            <label for="tableXValue"><strong>Nuevo valor de \(x\)</strong></label>
+            <input id="tableXValue" type="number" step="any" />
+          </div>
+          <div>
+            <label for="tableYValue"><strong>Nuevo valor de \(y\)</strong></label>
+            <input id="tableYValue" type="number" step="any" />
+          </div>
+          <div>
+            <button class="btn primary" id="addSolutionButton" type="button">Anadir solucion</button>
+          </div>
+        </div>
+
+        <div class="result" id="tableFeedback">Busca parejas que verifiquen la ecuacion.</div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>\(x\)</th>
+                <th>\(y\)</th>
+              </tr>
+            </thead>
+            <tbody id="solutionsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="phase" id="phase5">
+        <div class="phase-head">
+          <div>
+            <span class="phase-kicker">Fase 5</span>
+            <h2 class="phase-title">Representacion grafica</h2>
+            <p class="phase-subtitle">Observamos el patron de todos los puntos.</p>
+          </div>
+          <div class="phase-number">5</div>
+        </div>
+
+        <div class="result info" id="phase5EquationText"></div>
+  <div class="context" id="phase5Statement"></div>
+        <canvas id="graphCanvas" width="1000" height="560" aria-label="Plano cartesiano"></canvas>
+        <div class="result info">\[\text{¿Que observas con todos los puntos?}\]</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const exercises = [
+      { name: 'Papelería', statement: 'En una papelería, cada bolígrafo cuesta 2 euros y cada cuaderno 3 euros. Se gastan 12 euros.', var1: 'cantidad de bolígrafos', var2: 'cantidad de cuadernos', a: 2, b: 3, c: 12 },
+      { name: 'Granja: gallinas y conejos', statement: 'En una granja hay gallinas y conejos. Entre todos suman 34 patas.', var1: 'número de gallinas', var2: 'número de conejos', a: 2, b: 4, c: 34 },
+      { name: 'Cine escolar', statement: 'Las entradas infantiles valen 5 euros y las de adulto 8 euros. Se recaudan 46 euros.', var1: 'entradas infantiles', var2: 'entradas de adulto', a: 5, b: 8, c: 46 },
+      { name: 'Frutería', statement: 'Una manzana cuesta 1 euro y una pera 2 euros. El total de compra es 14 euros.', var1: 'número de manzanas', var2: 'número de peras', a: 1, b: 2, c: 14 },
+      { name: 'Parking', statement: 'En un parking hay motos y coches. Entre todos tienen 40 ruedas.', var1: 'número de motos', var2: 'número de coches', a: 2, b: 4, c: 40 },
+      { name: 'Bocadillos', statement: 'Un bocadillo simple cuesta 3 euros y uno doble 5 euros. Se venden por 29 euros.', var1: 'bocadillos simples', var2: 'bocadillos dobles', a: 3, b: 5, c: 29 },
+      { name: 'Cuerdas', statement: 'Se compran tramos de cuerda de 2 metros y de 5 metros. En total hay 26 metros.', var1: 'tramos de 2 metros', var2: 'tramos de 5 metros', a: 2, b: 5, c: 26 },
+      { name: 'Merchandising', statement: 'Una camiseta cuesta 12 euros y una gorra 8 euros. El total es 88 euros.', var1: 'camisetas', var2: 'gorras', a: 12, b: 8, c: 88 },
+      { name: 'Botellas de agua', statement: 'Hay botellas de 1 litro y de 2 litros. En total se juntan 18 litros.', var1: 'botellas de 1 litro', var2: 'botellas de 2 litros', a: 1, b: 2, c: 18 },
+      { name: 'Velas decorativas', statement: 'Una vela pequeña dura 3 horas y una grande 5 horas. Se quieren completar 31 horas.', var1: 'velas pequeñas', var2: 'velas grandes', a: 3, b: 5, c: 31 }
+    ];
+
+    const state = {
+      index: 0,
+      selected: { x: null, y: null },
+      pieces: [],
+      solutions: [],
+      score: 0,
+      sound: false,
+      activePhase: 1,
+      milestones: { variables: false, equation: false, firstCheck: false, solutionsFound: 0 }
+    };
+
+    const elements = {
+      exerciseSelect: document.getElementById('exerciseSelect'),
+      randomExerciseButton: document.getElementById('randomExerciseButton'),
+      nextPhaseButton: document.getElementById('nextPhaseButton'),
+      fullscreenButton: document.getElementById('fullscreenButton'),
+      resetButton: document.getElementById('resetButton'),
+      soundToggle: document.getElementById('soundToggle'),
+      phaseTabs: Array.from(document.querySelectorAll('.phase-tab')),
+      phases: [1, 2, 3, 4, 5].map((n) => document.getElementById(`phase${n}`)),
+      globalInfo: document.getElementById('globalInfo'),
+      scoreCounter: document.getElementById('scoreCounter'),
+      solutionsCounter: document.getElementById('solutionsCounter'),
+      phaseCounter: document.getElementById('phaseCounter'),
+      progressBar: document.getElementById('progressBar'),
+      progressLabel: document.getElementById('progressLabel'),
+      exerciseStatement: document.getElementById('exerciseStatement'),
+      phase2Statement: document.getElementById('phase2Statement'),
+      phase3Statement: document.getElementById('phase3Statement'),
+      phase4Statement: document.getElementById('phase4Statement'),
+      phase5Statement: document.getElementById('phase5Statement'),
+      xOptionVar1: document.getElementById('xOptionVar1'),
+      xOptionVar2: document.getElementById('xOptionVar2'),
+      yOptionVar1: document.getElementById('yOptionVar1'),
+      yOptionVar2: document.getElementById('yOptionVar2'),
+      variablesExpectedBadge: document.getElementById('variablesExpectedBadge'),
+      variablesFeedback: document.getElementById('variablesFeedback'),
+      checkVariablesButton: document.getElementById('checkVariablesButton'),
+      clearVariablesButton: document.getElementById('clearVariablesButton'),
+      piecesContainer: document.getElementById('piecesContainer'),
+      equationSlots: document.getElementById('equationSlots'),
+      equationPreview: document.getElementById('equationPreview'),
+      equationFeedback: document.getElementById('equationFeedback'),
+      checkEquationButton: document.getElementById('checkEquationButton'),
+      undoPieceButton: document.getElementById('undoPieceButton'),
+      resetEquationButton: document.getElementById('resetEquationButton'),
+      phase3EquationBox: document.getElementById('phase3EquationBox'),
+      xValue: document.getElementById('xValue'),
+      yValue: document.getElementById('yValue'),
+      checkSolutionButton: document.getElementById('checkSolutionButton'),
+      solutionSteps: document.getElementById('solutionSteps'),
+      solutionFeedback: document.getElementById('solutionFeedback'),
+      phase4EquationBadge: document.getElementById('phase4EquationBadge'),
+      tableXValue: document.getElementById('tableXValue'),
+      tableYValue: document.getElementById('tableYValue'),
+      addSolutionButton: document.getElementById('addSolutionButton'),
+      tableFeedback: document.getElementById('tableFeedback'),
+      tableBody: document.getElementById('solutionsTableBody'),
+      phase5EquationText: document.getElementById('phase5EquationText'),
+      graphCanvas: document.getElementById('graphCanvas')
+    };
+
+    const ctx = elements.graphCanvas.getContext('2d');
+    let audioContext = null;
+
+    function ex() {
+      return exercises[state.index];
+    }
+
+    function equationTerms() {
+      const e = ex();
+      // Si se seleccionaron variables cruzadas (x = var2, y = var1), intercambiar coeficientes
+      const swapped = state.selected && state.selected.x === 'var2' && state.selected.y === 'var1';
+      const coefX = swapped ? e.b : e.a;
+      const coefY = swapped ? e.a : e.b;
+      
+      const leftX = coefX === 1 ? 'x' : `${coefX}x`;
+      const leftY = coefY === 1 ? 'y' : `${coefY}y`;
+      return [leftX, '+', leftY, '=', String(e.c)];
+    }
+
+    function equationBuildTokens() {
+      const e = ex();
+      // Si se seleccionaron variables cruzadas (x = var2, y = var1), intercambiar coeficientes
+      const swapped = state.selected && state.selected.x === 'var2' && state.selected.y === 'var1';
+      const coefX = swapped ? e.b : e.a;
+      const coefY = swapped ? e.a : e.b;
+      
+      return [String(coefX), '·', 'x', '+', String(coefY), '·', 'y', '=', String(e.c)];
+    }
+
+    function tokenToLatex(token) {
+      return token === '·' ? '\\cdot' : token;
+    }
+
+    function shuffledTokens(tokens) {
+      const copy = [...tokens];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function equationInline() {
+      return `\\(${equationTerms().join(' ')}\\)`;
+    }
+
+    function equationDisplay() {
+      return `\\[${equationTerms().join(' ')}\\]`;
+    }
+
+    function maxUnlockedPhase() {
+      if (!state.milestones.variables) return 1;
+      if (!state.milestones.equation) return 2;
+      if (!state.milestones.firstCheck) return 3;
+      if (state.solutions.length === 0) return 4;
+      return 5;
+    }
+
+    function updateMath(scope = document.body) {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([scope]).catch(() => {});
+      }
+    }
+
+    function tone(freq, dur = 140, type = 'sine', gain = 0.04) {
+      if (!state.sound) return;
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioContext.createOscillator();
+      const g = audioContext.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      g.gain.value = gain;
+      osc.connect(g);
+      g.connect(audioContext.destination);
+      osc.start();
+      osc.stop(audioContext.currentTime + dur / 1000);
+    }
+
+    function setResult(element, message, type = 'info') {
+      element.className = `result ${type}`;
+      element.innerHTML = message;
+      updateMath(element);
+    }
+
+    function refreshStats() {
+      const milestones = Number(state.milestones.variables) + Number(state.milestones.equation) + Number(state.milestones.firstCheck) + Math.min(3, state.milestones.solutionsFound);
+      const progress = Math.round((milestones / 6) * 100);
+      elements.scoreCounter.textContent = String(state.score);
+      elements.solutionsCounter.textContent = String(state.solutions.length);
+      elements.phaseCounter.textContent = `${state.activePhase} / 5`;
+      elements.progressBar.style.width = `${progress}%`;
+      elements.progressLabel.textContent = `${progress}%`;
+    }
+
+    function setActivePhase(phase) {
+      const unlocked = maxUnlockedPhase();
+      state.activePhase = Math.max(1, Math.min(phase, unlocked));
+      elements.phases.forEach((panel, i) => {
+        panel.classList.toggle('visible', i + 1 === state.activePhase);
+      });
+      elements.phaseTabs.forEach((tab) => {
+        const tabPhase = Number(tab.dataset.phase);
+        tab.disabled = tabPhase > unlocked;
+        tab.classList.toggle('active', tabPhase === state.activePhase);
+      });
+      refreshStats();
+      if (state.activePhase === 5 && state.solutions.length > 0) {
+        setTimeout(drawGraph, 10);
+      }
+    }
+
+    function renderExerciseSelector() {
+      elements.exerciseSelect.innerHTML = exercises.map((item, i) => `<option value="${i}">Ejercicio ${i + 1}: ${item.name}</option>`).join('');
+      elements.exerciseSelect.value = String(state.index);
+    }
+
+    function renderVariableCards() {
+      const e = ex();
+      elements.exerciseStatement.textContent = e.statement;
+      elements.phase2Statement.textContent = e.statement;
+      elements.phase3Statement.textContent = e.statement;
+      elements.phase4Statement.textContent = e.statement;
+      elements.phase5Statement.textContent = e.statement;
+      elements.xOptionVar1.textContent = e.var1;
+      elements.xOptionVar2.textContent = e.var2;
+      elements.yOptionVar1.textContent = e.var1;
+      elements.yOptionVar2.textContent = e.var2;
+      elements.variablesExpectedBadge.textContent = 'Piensa y debate: que representa x y que representa y.';
+      updateMath(elements.phase1);
+    }
+
+    function renderPieces() {
+      const randomOrder = shuffledTokens(equationBuildTokens());
+      elements.piecesContainer.innerHTML = randomOrder.map((token) => `<button class="piece" data-piece="${token}" type="button">\\(${tokenToLatex(token)}\\)</button>`).join('');
+      elements.piecesContainer.querySelectorAll('.piece').forEach((button) => {
+        button.addEventListener('click', () => {
+          if (!state.milestones.variables || state.pieces.length >= equationBuildTokens().length) return;
+          state.pieces.push(button.dataset.piece);
+          button.disabled = true;
+          renderSlots();
+          setResult(elements.equationFeedback, 'Pieza anadida. Sigue.', 'info');
+        });
+      });
+      updateMath(elements.piecesContainer);
+    }
+
+    function renderSlots() {
+      const totalSlots = equationBuildTokens().length;
+      elements.equationSlots.innerHTML = Array.from({ length: totalSlots }, (_, i) => {
+        if (state.pieces[i]) return `<div class="slot">\\(${tokenToLatex(state.pieces[i])}\\)</div>`;
+        return '<div class="slot placeholder">\\(\\square\\)</div>';
+      }).join('');
+      elements.equationPreview.innerHTML = state.pieces.length
+        ? `\\[${state.pieces.map((token) => tokenToLatex(token)).join(' ')}\\]`
+        : '\\[\\;\\]';
+      updateMath(elements.equationSlots);
+      updateMath(elements.equationPreview);
+    }
+
+    function renderEquationInLaterPhases() {
+      if (state.milestones.equation) {
+        elements.phase3EquationBox.innerHTML = equationDisplay();
+        elements.phase4EquationBadge.innerHTML = `Ecuacion del ejercicio: ${equationInline()}`;
+        elements.phase5EquationText.innerHTML = equationDisplay();
+      } else {
+        elements.phase3EquationBox.innerHTML = '\\[\\text{Primero descubre la ecuacion en la fase 2}\\]';
+        elements.phase4EquationBadge.textContent = 'Ecuacion del ejercicio: pendiente de descubrir';
+        elements.phase5EquationText.innerHTML = '\\[\\text{La ecuacion aparecera al completar la fase 2}\\]';
+      }
+      updateMath(elements.phase3EquationBox);
+      updateMath(elements.phase4EquationBadge);
+      updateMath(elements.phase5EquationText);
+    }
+
+    function resetStateForExercise() {
+      state.selected = { x: null, y: null };
+      state.pieces = [];
+      state.solutions = [];
+      state.activePhase = 1;
+      state.milestones = { variables: false, equation: false, firstCheck: false, solutionsFound: 0 };
+      elements.xValue.value = '';
+      elements.yValue.value = '';
+      elements.tableXValue.value = '';
+      elements.tableYValue.value = '';
+      document.querySelectorAll('.choice').forEach((choice) => choice.classList.remove('selected', 'ok', 'bad'));
+      setResult(elements.variablesFeedback, 'Selecciona una opcion para \\(x\\) y otra para \\(y\\).', 'info');
+      setResult(elements.equationFeedback, 'Construye la expresion con las piezas.', 'info');
+      setResult(elements.solutionSteps, 'Aqui aparecera el calculo paso a paso.', 'info');
+      setResult(elements.solutionFeedback, 'Introduce dos valores y comprueba.', 'info');
+      setResult(elements.tableFeedback, 'Busca parejas que verifiquen la ecuacion.', 'info');
+      elements.tableBody.innerHTML = '';
+      renderPieces();
+      renderSlots();
+      renderEquationInLaterPhases();
+      setActivePhase(1);
+      drawGraph();
+      refreshStats();
+      updateMath(document.body);
+    }
+
+    function loadExercise(index) {
+      state.index = Math.max(0, Math.min(index, exercises.length - 1));
+      elements.exerciseSelect.value = String(state.index);
+      renderVariableCards();
+      resetStateForExercise();
+    }
+
+    function setupChoiceEvents() {
+      document.querySelectorAll('.choice').forEach((choice) => {
+        choice.addEventListener('click', () => {
+          const variable = choice.dataset.variable;
+          state.selected[variable] = choice.dataset.value;
+          document.querySelectorAll(`.choice[data-variable="${variable}"]`).forEach((item) => item.classList.remove('selected'));
+          choice.classList.add('selected');
+          setResult(elements.variablesFeedback, `Seleccion registrada para ${variable}.`, 'info');
+        });
+      });
+    }
+
+    function checkVariables() {
+      if (!state.selected.x || !state.selected.y) {
+        setResult(elements.variablesFeedback, 'Falta una seleccion.', 'bad');
+        tone(180, 180, 'triangle', 0.03);
+        return;
+      }
+      // Ambas asignaciones son válidas: (var1, var2) o (var2, var1)
+      const isValidAssignment = 
+        (state.selected.x === 'var1' && state.selected.y === 'var2') ||
+        (state.selected.x === 'var2' && state.selected.y === 'var1');
+      
+      document.querySelectorAll('.choice').forEach((choice) => {
+        const selected = state.selected[choice.dataset.variable] === choice.dataset.value;
+        if (!selected) return;
+        const good = 
+          (choice.dataset.variable === 'x' && choice.dataset.value === 'var1') || 
+          (choice.dataset.variable === 'x' && choice.dataset.value === 'var2') ||
+          (choice.dataset.variable === 'y' && choice.dataset.value === 'var1') ||
+          (choice.dataset.variable === 'y' && choice.dataset.value === 'var2');
+        choice.classList.add(good ? 'ok' : 'bad');
+      });
+
+      if (isValidAssignment) {
+        setResult(elements.variablesFeedback, '✅ Correcto. Variables identificadas.', 'ok');
+        if (!state.milestones.variables) {
+          state.milestones.variables = true;
+          state.score += 1;
+          renderPieces();
+        }
+        tone(590, 150, 'sine', 0.04);
+      } else {
+        setResult(elements.variablesFeedback, '❌ Buena oportunidad para debatir el error de interpretacion.', 'bad');
+        tone(180, 190, 'sawtooth', 0.03);
+      }
+      setActivePhase(state.activePhase);
+    }
+
+    function clearVariableSelection() {
+      state.selected = { x: null, y: null };
+      document.querySelectorAll('.choice').forEach((choice) => choice.classList.remove('selected', 'ok', 'bad'));
+      setResult(elements.variablesFeedback, 'Seleccion limpiada.', 'info');
+    }
+
+    function resetEquationPieces() {
+      state.pieces = [];
+      elements.piecesContainer.querySelectorAll('.piece').forEach((button) => {
+        button.disabled = false;
+      });
+      renderSlots();
+      setResult(elements.equationFeedback, 'Piezas reiniciadas.', 'info');
+    }
+
+    function undoPiece() {
+      if (state.pieces.length === 0) return;
+      const removed = state.pieces.pop();
+      const disabled = Array.from(elements.piecesContainer.querySelectorAll('.piece')).find((button) => button.dataset.piece === removed && button.disabled);
+      if (disabled) disabled.disabled = false;
+      renderSlots();
+      setResult(elements.equationFeedback, 'Ultima pieza eliminada.', 'info');
+    }
+
+    function checkEquation() {
+      const expected = equationBuildTokens();
+      if (state.pieces.length !== expected.length) {
+        setResult(elements.equationFeedback, 'Faltan piezas para completar la ecuacion.', 'bad');
+        return;
+      }
+      const isCorrect = expected.every((token, index) => token === state.pieces[index]);
+      if (isCorrect) {
+        setResult(elements.equationFeedback, `✅ Ecuacion descubierta: ${equationDisplay()}`, 'ok');
+        if (!state.milestones.equation) {
+          state.milestones.equation = true;
+          state.score += 1;
+        }
+        renderEquationInLaterPhases();
+        tone(660, 170, 'sine', 0.04);
+      } else {
+        setResult(elements.equationFeedback, '❌ Revisemos coeficientes, incognitas, operaciones y termino independiente.', 'bad');
+        tone(170, 200, 'triangle', 0.03);
+      }
+      setActivePhase(state.activePhase);
+    }
+
+    function evaluate(x, y) {
+      const e = ex();
+      // Si se seleccionaron variables cruzadas (x = var2, y = var1), intercambiar coeficientes
+      const swapped = state.selected && state.selected.x === 'var2' && state.selected.y === 'var1';
+      const coefX = swapped ? e.b : e.a;
+      const coefY = swapped ? e.a : e.b;
+      
+      const value = coefX * x + coefY * y;
+      return { value, ok: Math.abs(value - e.c) < 1e-9 };
+    }
+
+    function checkSolutionPair() {
+      if (!state.milestones.equation) return;
+      const x = Number(elements.xValue.value);
+      const y = Number(elements.yValue.value);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        setResult(elements.solutionFeedback, 'Introduce dos numeros validos.', 'bad');
+        return;
+      }
+      const e = ex();
+      const result = evaluate(x, y);
+      const xL = Number.isInteger(x) ? String(x) : String(x).replace('.', '{,}');
+      const yL = Number.isInteger(y) ? String(y) : String(y).replace('.', '{,}');
+      const vL = Number.isInteger(result.value) ? String(result.value) : String(result.value).replace('.', '{,}');
+      setResult(elements.solutionSteps, `\\[${e.a}(${xL}) + ${e.b}(${yL}) = ${vL}\\]`, 'info');
+      if (result.ok) {
+        setResult(elements.solutionFeedback, '✅ Si es solucion.', 'ok');
+        if (!state.milestones.firstCheck) {
+          state.milestones.firstCheck = true;
+          state.score += 1;
+        }
+        tone(680, 160, 'sine', 0.04);
+      } else {
+        setResult(elements.solutionFeedback, `❌ No es solucion: debe dar \\(${e.c}\\).`, 'bad');
+        tone(180, 200, 'sawtooth', 0.03);
+      }
+      setActivePhase(state.activePhase);
+    }
+
+    function addSolutionToTable() {
+      if (!state.milestones.firstCheck) return;
+      const x = Number(elements.tableXValue.value);
+      const y = Number(elements.tableYValue.value);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        setResult(elements.tableFeedback, 'Introduce dos numeros validos.', 'bad');
+        return;
+      }
+      const result = evaluate(x, y);
+      if (!result.ok) {
+        setResult(elements.tableFeedback, `❌ \\(${x}, ${y}\\) no cumple ${equationInline()}.`, 'bad');
+        return;
+      }
+      const exists = state.solutions.some((point) => Math.abs(point.x - x) < 1e-9 && Math.abs(point.y - y) < 1e-9);
+      if (exists) {
+        setResult(elements.tableFeedback, 'ℹ️ Esa pareja ya estaba en la tabla.', 'info');
+        return;
+      }
+      state.solutions.push({ x, y });
+      state.solutions.sort((p1, p2) => p1.x - p2.x);
+      state.score += 1;
+      state.milestones.solutionsFound = Math.min(3, state.solutions.length);
+      setResult(elements.tableFeedback, `✅ Solucion anadida: \\(${x}, ${y}\\).`, 'ok');
+      renderTable();
+      drawGraph();
+      setActivePhase(state.activePhase);
+    }
+
+    function renderTable() {
+      elements.tableBody.innerHTML = state.solutions.map((point) => `<tr><td>\\(${point.x}\\)</td><td>\\(${point.y}\\)</td></tr>`).join('');
+      updateMath(elements.tableBody);
+    }
+
+    function graphLimits() {
+      const e = ex();
+      // Si se seleccionaron variables cruzadas (x = var2, y = var1), intercambiar coeficientes
+      const swapped = state.selected && state.selected.x === 'var2' && state.selected.y === 'var1';
+      const coefX = swapped ? e.b : e.a;
+      const coefY = swapped ? e.a : e.b;
+      
+      const xCut = e.c / coefX;
+      const yCut = e.c / coefY;
+      const maxXPoint = state.solutions.reduce((max, p) => Math.max(max, p.x), 0);
+      const maxYPoint = state.solutions.reduce((max, p) => Math.max(max, p.y), 0);
+      return {
+        minX: -1,
+        maxX: Math.max(10, Math.ceil(Math.max(xCut, maxXPoint)) + 2),
+        minY: -1,
+        maxY: Math.max(10, Math.ceil(Math.max(yCut, maxYPoint)) + 2)
+      };
+    }
+
+    function drawGraph() {
+      const rect = elements.graphCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const width = Math.floor(rect.width * dpr);
+      const height = Math.floor(rect.height * dpr);
+      if (elements.graphCanvas.width !== width || elements.graphCanvas.height !== height) {
+        elements.graphCanvas.width = width;
+        elements.graphCanvas.height = height;
+      }
+
+      const limits = graphLimits();
+      const pl = width * 0.1;
+      const pr = width * 0.06;
+      const pt = height * 0.08;
+      const pb = height * 0.12;
+      const pw = width - pl - pr;
+      const ph = height - pt - pb;
+
+      const toX = (x) => pl + ((x - limits.minX) / (limits.maxX - limits.minX)) * pw;
+      const toY = (y) => height - pb - ((y - limits.minY) / (limits.maxY - limits.minY)) * ph;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = 'rgba(24, 52, 58, 0.08)';
+      ctx.lineWidth = 1;
+      for (let x = limits.minX; x <= limits.maxX; x += 1) {
+        const px = toX(x);
+        ctx.beginPath();
+        ctx.moveTo(px, pt);
+        ctx.lineTo(px, height - pb);
+        ctx.stroke();
+      }
+      for (let y = limits.minY; y <= limits.maxY; y += 1) {
+        const py = toY(y);
+        ctx.beginPath();
+        ctx.moveTo(pl, py);
+        ctx.lineTo(width - pr, py);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = 'rgba(24, 52, 58, 0.72)';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(pl, toY(0));
+      ctx.lineTo(width - pr, toY(0));
+      ctx.moveTo(toX(0), pt);
+      ctx.lineTo(toX(0), height - pb);
+      ctx.stroke();
+
+      if (state.solutions.length > 0) {
+        const ordered = [...state.solutions].sort((a, b) => a.x - b.x);
+        const e = ex();
+        
+        // Si se seleccionaron variables cruzadas (x = var2, y = var1), intercambiar coeficientes
+        const swapped = state.selected && state.selected.x === 'var2' && state.selected.y === 'var1';
+        const coefX = swapped ? e.b : e.a;
+        const coefY = swapped ? e.a : e.b;
+        
+        // Dibujar la recta extendida (representación teórica)
+        ctx.strokeStyle = '#0f766e';
+        ctx.lineWidth = 6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        
+        // Calcular dos puntos extremos de la recta: coefX*x + coefY*y = c
+        const x1 = limits.minX;
+        const y1 = coefY !== 0 ? (e.c - coefX * x1) / coefY : null;
+        const x2 = limits.maxX;
+        const y2 = coefY !== 0 ? (e.c - coefX * x2) / coefY : null;
+        
+        if (y1 !== null && y2 !== null) {
+          ctx.moveTo(toX(x1), toY(y1));
+          ctx.lineTo(toX(x2), toY(y2));
+          ctx.stroke();
+        }
+        
+        // Dibujar los puntos solución
+        ordered.forEach((point) => {
+          const px = toX(point.x);
+          const py = toY(point.y);
+          
+          // Círculo naranja con borde
+          ctx.beginPath();
+          ctx.arc(px, py, 10, 0, Math.PI * 2);
+          ctx.fillStyle = '#f97316';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          
+          // Etiqueta
+          ctx.fillStyle = '#17343a';
+          ctx.font = `bold ${Math.round(width * 0.018)}px Manrope, sans-serif`;
+          ctx.fillText(`(${point.x}, ${point.y})`, px + 12, py - 12);
+        });
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function syncFullscreenButton() {
+      elements.fullscreenButton.textContent = document.fullscreenElement ? 'Salir de pantalla completa' : 'Pantalla completa';
+    }
+
+    function wireEvents() {
+      setupChoiceEvents();
+      elements.checkVariablesButton.addEventListener('click', checkVariables);
+      elements.clearVariablesButton.addEventListener('click', clearVariableSelection);
+      elements.checkEquationButton.addEventListener('click', checkEquation);
+      elements.undoPieceButton.addEventListener('click', undoPiece);
+      elements.resetEquationButton.addEventListener('click', resetEquationPieces);
+      elements.checkSolutionButton.addEventListener('click', checkSolutionPair);
+      elements.addSolutionButton.addEventListener('click', addSolutionToTable);
+
+      elements.exerciseSelect.addEventListener('change', (event) => {
+        loadExercise(Number(event.target.value));
+      });
+
+      elements.randomExerciseButton.addEventListener('click', () => {
+        let next = state.index;
+        while (next === state.index) {
+          next = Math.floor(Math.random() * exercises.length);
+        }
+        loadExercise(next);
+      });
+
+      elements.nextPhaseButton.addEventListener('click', () => {
+        setActivePhase(Math.min(state.activePhase + 1, maxUnlockedPhase()));
+      });
+
+      elements.phaseTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const phase = Number(tab.dataset.phase);
+          if (phase <= maxUnlockedPhase()) {
+            setActivePhase(phase);
+          } else {
+            setResult(elements.globalInfo, `Primero completa la fase ${phase - 1}.`, 'bad');
+          }
+        });
+      });
+
+      elements.resetButton.addEventListener('click', () => loadExercise(state.index));
+      elements.soundToggle.addEventListener('change', (event) => {
+        state.sound = event.target.checked;
+      });
+      elements.fullscreenButton.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', syncFullscreenButton);
+      window.addEventListener('resize', drawGraph);
+    }
+
+    function init() {
+      renderExerciseSelector();
+      wireEvents();
+      loadExercise(0);
+      setResult(elements.globalInfo, 'Formato colectivo: cada error se debate y cada acierto se justifica.', 'info');
+      syncFullscreenButton();
+      drawGraph();
+      updateMath(document.body);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  </script>
+  <footer style="font-size: 11px; color: rgba(23, 50, 58, 0.5); text-align: center; margin-top: 32px; padding: 16px;">
+    Creada por Sergio Jodral, profesor de matemáticas | Desarrollado con IA | Versión 1.0
+  </footer>
+</body>
+</html>
