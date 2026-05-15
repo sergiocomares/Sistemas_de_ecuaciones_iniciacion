@@ -490,9 +490,9 @@
 <body>
   <div class="app">
     <header class="hero">
-      <div class="eyebrow">2º ESO · Primer dia · Trabajo grupal</div>
+      <div class="eyebrow">2º ESO · Primer día · Trabajo grupal</div>
       <h1>Descubriendo las ecuaciones lineales</h1>
-      <p class="subtitle">Actividad por fases para pizarra digital: interpretar, proponer oralmente, comprobar en directo y detectar patrones en la grafica.</p>
+      <p class="subtitle">Actividad por fases para pizarra digital: interpretar, proponer oralmente, comprobar en directo y detectar patrones en la gráfica.</p>
 
       <div class="toolbar">
         <select id="exerciseSelect" aria-label="Selector de ejercicio"></select>
@@ -519,7 +519,7 @@
 
       <div class="stats">
         <div class="stat"><div class="stat-label">Aciertos</div><div class="stat-value" id="scoreCounter">0</div></div>
-        <div class="stat"><div class="stat-label">Soluciones validas</div><div class="stat-value" id="solutionsCounter">0</div></div>
+        <div class="stat"><div class="stat-label">Soluciones válidas</div><div class="stat-value" id="solutionsCounter">0</div></div>
         <div class="stat"><div class="stat-label">Fase actual</div><div class="stat-value" id="phaseCounter">1 / 5</div></div>
       </div>
 
@@ -533,11 +533,11 @@
     <section class="grid">
       <article class="card">
         <h2>Ritmo de clase</h2>
-        La idea es pausar y comentar. Primero variables, despues ecuacion, despues soluciones y finalmente grafica.
+        La idea es pausar y comentar. Primero variables, después ecuación, después soluciones y finalmente gráfica.
       </article>
       <article class="card">
         <h2>Objetivo visual</h2>
-        \[\text{Ver que las soluciones de una ecuacion lineal forman una recta}\]
+        \[\text{Ver que las soluciones de una ecuación lineal forman una recta}\]
       </article>
     </section>
 
@@ -567,10 +567,10 @@
 
         <div class="phase-actions" style="grid-template-columns:1fr 1fr;">
           <button class="btn primary" id="checkVariablesButton" type="button">Comprobar variables</button>
-          <button class="btn secondary" id="clearVariablesButton" type="button">Limpiar seleccion</button>
+          <button class="btn secondary" id="clearVariablesButton" type="button">Limpiar selección</button>
         </div>
 
-        <div class="result" id="variablesFeedback">Selecciona una opcion para \(x\) y otra para \(y\).</div>
+        <div class="result" id="variablesFeedback">Selecciona una opción para \(x\) y otra para \(y\).</div>
         <div class="math-badge" id="variablesExpectedBadge"></div>
       </section>
 
@@ -578,8 +578,8 @@
         <div class="phase-head">
           <div>
             <span class="phase-kicker">Fase 2</span>
-            <h2 class="phase-title">Construir la ecuacion</h2>
-            <p class="phase-subtitle">Unimos piezas para formar la expresion.</p>
+            <h2 class="phase-title">Construir la ecuación</h2>
+            <p class="phase-subtitle">Unimos piezas para formar la expresión.</p>
           </div>
           <div class="phase-number">2</div>
         </div>
@@ -590,26 +590,26 @@
         <div class="result info" id="equationPreview">\[\;\]</div>
 
         <div class="phase-actions" style="grid-template-columns:1fr 1fr 1fr;">
-          <button class="btn primary" id="checkEquationButton" type="button">Comprobar ecuacion</button>
-          <button class="btn secondary" id="undoPieceButton" type="button">Deshacer ultimo</button>
+          <button class="btn primary" id="checkEquationButton" type="button">Comprobar ecuación</button>
+          <button class="btn secondary" id="undoPieceButton" type="button">Deshacer último</button>
           <button class="btn ghost" id="resetEquationButton" type="button">Reiniciar piezas</button>
         </div>
 
-        <div class="result" id="equationFeedback">Construye la expresion con las piezas.</div>
+        <div class="result" id="equationFeedback">Construye la expresión con las piezas.</div>
       </section>
 
       <section class="phase" id="phase3">
         <div class="phase-head">
           <div>
             <span class="phase-kicker">Fase 3</span>
-            <h2 class="phase-title">¿Es solucion?</h2>
+            <h2 class="phase-title">¿Es solución?</h2>
             <p class="phase-subtitle">Sustituimos \(x\) e \(y\) y comprobamos.</p>
           </div>
           <div class="phase-number">3</div>
         </div>
 
           <div class="context" id="phase3Statement"></div>
-        <div class="context" id="phase3EquationBox">\[\text{Primero descubre la ecuacion en la fase 2}\]</div>
+        <div class="context" id="phase3EquationBox">\[\text{Primero descubre la ecuación en la fase 2}\]</div>
 
         <div class="row">
           <div>
@@ -625,7 +625,7 @@
           </div>
         </div>
 
-        <div class="result info" id="solutionSteps">Aqui aparecera el calculo paso a paso.</div>
+        <div class="result info" id="solutionSteps">Aquí aparecerá el cálculo paso a paso.</div>
         <div class="result" id="solutionFeedback">Introduce dos valores y comprueba.</div>
       </section>
 
@@ -634,7 +634,7 @@
           <div>
             <span class="phase-kicker">Fase 4</span>
             <h2 class="phase-title">Tabla de valores</h2>
-            <p class="phase-subtitle">Anadimos varias soluciones validas.</p>
+            <p class="phase-subtitle">Añadimos varias soluciones válidas.</p>
           </div>
           <div class="phase-number">4</div>
         </div>
@@ -652,11 +652,11 @@
             <input id="tableYValue" type="number" step="any" />
           </div>
           <div>
-            <button class="btn primary" id="addSolutionButton" type="button">Anadir solucion</button>
+            <button class="btn primary" id="addSolutionButton" type="button">Añadir solución</button>
           </div>
         </div>
 
-        <div class="result" id="tableFeedback">Busca parejas que verifiquen la ecuacion.</div>
+        <div class="result" id="tableFeedback">Busca parejas que verifiquen la ecuación.</div>
 
         <div class="table-wrap">
           <table>
@@ -675,8 +675,8 @@
         <div class="phase-head">
           <div>
             <span class="phase-kicker">Fase 5</span>
-            <h2 class="phase-title">Representacion grafica</h2>
-            <p class="phase-subtitle">Observamos el patron de todos los puntos.</p>
+            <h2 class="phase-title">Representación gráfica</h2>
+            <p class="phase-subtitle">Observamos el patrón de todos los puntos.</p>
           </div>
           <div class="phase-number">5</div>
         </div>
@@ -892,7 +892,7 @@
       elements.xOptionVar2.textContent = e.var2;
       elements.yOptionVar1.textContent = e.var1;
       elements.yOptionVar2.textContent = e.var2;
-      elements.variablesExpectedBadge.textContent = 'Piensa y debate: que representa x y que representa y.';
+      elements.variablesExpectedBadge.textContent = 'Piensa y debate: qué representa x y qué representa y.';
       updateMath(elements.phase1);
     }
 
@@ -905,7 +905,7 @@
           state.pieces.push(button.dataset.piece);
           button.disabled = true;
           renderSlots();
-          setResult(elements.equationFeedback, 'Pieza anadida. Sigue.', 'info');
+          setResult(elements.equationFeedback, 'Pieza añadida. Sigue.', 'info');
         });
       });
       updateMath(elements.piecesContainer);
@@ -927,12 +927,12 @@
     function renderEquationInLaterPhases() {
       if (state.milestones.equation) {
         elements.phase3EquationBox.innerHTML = equationDisplay();
-        elements.phase4EquationBadge.innerHTML = `Ecuacion del ejercicio: ${equationInline()}`;
+        elements.phase4EquationBadge.innerHTML = `Ecuación del ejercicio: ${equationInline()}`;
         elements.phase5EquationText.innerHTML = equationDisplay();
       } else {
-        elements.phase3EquationBox.innerHTML = '\\[\\text{Primero descubre la ecuacion en la fase 2}\\]';
-        elements.phase4EquationBadge.textContent = 'Ecuacion del ejercicio: pendiente de descubrir';
-        elements.phase5EquationText.innerHTML = '\\[\\text{La ecuacion aparecera al completar la fase 2}\\]';
+        elements.phase3EquationBox.innerHTML = '\\[\\text{Primero descubre la ecuación en la fase 2}\\]';
+        elements.phase4EquationBadge.textContent = 'Ecuación del ejercicio: pendiente de descubrir';
+        elements.phase5EquationText.innerHTML = '\\[\\text{La ecuación aparecerá al completar la fase 2}\\]';
       }
       updateMath(elements.phase3EquationBox);
       updateMath(elements.phase4EquationBadge);
@@ -950,11 +950,11 @@
       elements.tableXValue.value = '';
       elements.tableYValue.value = '';
       document.querySelectorAll('.choice').forEach((choice) => choice.classList.remove('selected', 'ok', 'bad'));
-      setResult(elements.variablesFeedback, 'Selecciona una opcion para \\(x\\) y otra para \\(y\\).', 'info');
-      setResult(elements.equationFeedback, 'Construye la expresion con las piezas.', 'info');
-      setResult(elements.solutionSteps, 'Aqui aparecera el calculo paso a paso.', 'info');
+      setResult(elements.variablesFeedback, 'Selecciona una opción para \\(x\\) y otra para \\(y\\).', 'info');
+      setResult(elements.equationFeedback, 'Construye la expresión con las piezas.', 'info');
+      setResult(elements.solutionSteps, 'Aquí aparecerá el cálculo paso a paso.', 'info');
       setResult(elements.solutionFeedback, 'Introduce dos valores y comprueba.', 'info');
-      setResult(elements.tableFeedback, 'Busca parejas que verifiquen la ecuacion.', 'info');
+      setResult(elements.tableFeedback, 'Busca parejas que verifiquen la ecuación.', 'info');
       elements.tableBody.innerHTML = '';
       renderPieces();
       renderSlots();
@@ -979,14 +979,14 @@
           state.selected[variable] = choice.dataset.value;
           document.querySelectorAll(`.choice[data-variable="${variable}"]`).forEach((item) => item.classList.remove('selected'));
           choice.classList.add('selected');
-          setResult(elements.variablesFeedback, `Seleccion registrada para ${variable}.`, 'info');
+          setResult(elements.variablesFeedback, `Selección registrada para ${variable}.`, 'info');
         });
       });
     }
 
     function checkVariables() {
       if (!state.selected.x || !state.selected.y) {
-        setResult(elements.variablesFeedback, 'Falta una seleccion.', 'bad');
+        setResult(elements.variablesFeedback, 'Falta una selección.', 'bad');
         tone(180, 180, 'triangle', 0.03);
         return;
       }
@@ -1015,7 +1015,7 @@
         }
         tone(590, 150, 'sine', 0.04);
       } else {
-        setResult(elements.variablesFeedback, '❌ Buena oportunidad para debatir el error de interpretacion.', 'bad');
+        setResult(elements.variablesFeedback, '❌ Buena oportunidad para debatir el error de interpretación.', 'bad');
         tone(180, 190, 'sawtooth', 0.03);
       }
       setActivePhase(state.activePhase);
@@ -1024,7 +1024,7 @@
     function clearVariableSelection() {
       state.selected = { x: null, y: null };
       document.querySelectorAll('.choice').forEach((choice) => choice.classList.remove('selected', 'ok', 'bad'));
-      setResult(elements.variablesFeedback, 'Seleccion limpiada.', 'info');
+      setResult(elements.variablesFeedback, 'Selección limpiada.', 'info');
     }
 
     function resetEquationPieces() {
@@ -1042,18 +1042,18 @@
       const disabled = Array.from(elements.piecesContainer.querySelectorAll('.piece')).find((button) => button.dataset.piece === removed && button.disabled);
       if (disabled) disabled.disabled = false;
       renderSlots();
-      setResult(elements.equationFeedback, 'Ultima pieza eliminada.', 'info');
+      setResult(elements.equationFeedback, 'Última pieza eliminada.', 'info');
     }
 
     function checkEquation() {
       const expected = equationBuildTokens();
       if (state.pieces.length !== expected.length) {
-        setResult(elements.equationFeedback, 'Faltan piezas para completar la ecuacion.', 'bad');
+        setResult(elements.equationFeedback, 'Faltan piezas para completar la ecuación.', 'bad');
         return;
       }
       const isCorrect = expected.every((token, index) => token === state.pieces[index]);
       if (isCorrect) {
-        setResult(elements.equationFeedback, `✅ Ecuacion descubierta: ${equationDisplay()}`, 'ok');
+        setResult(elements.equationFeedback, `✅ Ecuación descubierta: ${equationDisplay()}`, 'ok');
         if (!state.milestones.equation) {
           state.milestones.equation = true;
           state.score += 1;
@@ -1061,7 +1061,7 @@
         renderEquationInLaterPhases();
         tone(660, 170, 'sine', 0.04);
       } else {
-        setResult(elements.equationFeedback, '❌ Revisemos coeficientes, incognitas, operaciones y termino independiente.', 'bad');
+        setResult(elements.equationFeedback, '❌ Revisemos coeficientes, incógnitas, operaciones y término independiente.', 'bad');
         tone(170, 200, 'triangle', 0.03);
       }
       setActivePhase(state.activePhase);
@@ -1083,7 +1083,7 @@
       const x = Number(elements.xValue.value);
       const y = Number(elements.yValue.value);
       if (!Number.isFinite(x) || !Number.isFinite(y)) {
-        setResult(elements.solutionFeedback, 'Introduce dos numeros validos.', 'bad');
+        setResult(elements.solutionFeedback, 'Introduce dos números válidos.', 'bad');
         return;
       }
       const e = ex();
@@ -1093,14 +1093,14 @@
       const vL = Number.isInteger(result.value) ? String(result.value) : String(result.value).replace('.', '{,}');
       setResult(elements.solutionSteps, `\\[${e.a}(${xL}) + ${e.b}(${yL}) = ${vL}\\]`, 'info');
       if (result.ok) {
-        setResult(elements.solutionFeedback, '✅ Si es solucion.', 'ok');
+        setResult(elements.solutionFeedback, '✅ Sí es solución.', 'ok');
         if (!state.milestones.firstCheck) {
           state.milestones.firstCheck = true;
           state.score += 1;
         }
         tone(680, 160, 'sine', 0.04);
       } else {
-        setResult(elements.solutionFeedback, `❌ No es solucion: debe dar \\(${e.c}\\).`, 'bad');
+        setResult(elements.solutionFeedback, `❌ No es solución: debe dar \\(${e.c}\\).`, 'bad');
         tone(180, 200, 'sawtooth', 0.03);
       }
       setActivePhase(state.activePhase);
@@ -1111,7 +1111,7 @@
       const x = Number(elements.tableXValue.value);
       const y = Number(elements.tableYValue.value);
       if (!Number.isFinite(x) || !Number.isFinite(y)) {
-        setResult(elements.tableFeedback, 'Introduce dos numeros validos.', 'bad');
+        setResult(elements.tableFeedback, 'Introduce dos números válidos.', 'bad');
         return;
       }
       const result = evaluate(x, y);
@@ -1128,7 +1128,7 @@
       state.solutions.sort((p1, p2) => p1.x - p2.x);
       state.score += 1;
       state.milestones.solutionsFound = Math.min(3, state.solutions.length);
-      setResult(elements.tableFeedback, `✅ Solucion anadida: \\(${x}, ${y}\\).`, 'ok');
+      setResult(elements.tableFeedback, `✅ Solución añadida: \\(${x}, ${y}\\).`, 'ok');
       renderTable();
       drawGraph();
       setActivePhase(state.activePhase);
